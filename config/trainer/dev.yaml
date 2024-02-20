@@ -1,0 +1,6 @@
+defaults:
+  - default
+
+fast_dev_run: True
+accelerator: gpu
+devices: 1

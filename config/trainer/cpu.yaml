@@ -1,0 +1,6 @@
+defaults:
+  - default
+
+precision: bf16-mixed
+accelerator: cpu
+devices: 1
