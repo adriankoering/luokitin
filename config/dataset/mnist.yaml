@@ -1,0 +1,6 @@
+_target_: dataset.modules.mnist.MnistDataModule
+
+batch_size: 64
+num_workers: 8
+mean: [0.5,]
+std:  [0.5,]

@@ -1,0 +1,4 @@
+defaults:
+  - mnist
+
+_target_: dataset.modules.mnist.WebDSDataModule

@@ -3,8 +3,11 @@ from omegaconf import DictConfig, OmegaConf
 
 @hydra.main(config_path="config", config_name="train", version_base="1.3")
 def main(cfg: DictConfig):
+    print(OmegaConf.to_yaml(cfg))
 
-    # dm = hydra.utils.instantiate(cfg.dataset)
+    print(OmegaConf.to_yaml(cfg.dataset))
+
+    dm = hydra.utils.instantiate(cfg.dataset)
     # model = hydra.utils.instantiate(cfg.model, datamodule=dm)
     # model = model.to(memory_format=torch.channels_last)
 

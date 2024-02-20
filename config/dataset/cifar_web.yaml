@@ -1,0 +1,4 @@
+defaults:
+  - cifar
+
+_target_: dataset.modules.cifar.WebDSDataModule
