@@ -1,5 +1,6 @@
 defaults:
   - default
 
+precision: 16-mixed
 accelerator: gpu
 devices: 1

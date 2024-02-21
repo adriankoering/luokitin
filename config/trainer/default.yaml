@@ -11,7 +11,6 @@ check_val_every_n_epoch: 5
 deterministic: False
 benchmark: True
 
-# TODO: set to GPU when available
-precision: bf16-mixed
-accelerator: cpu
+precision: 16-mixed
+accelerator: gpu
 devices: 1
