@@ -1,0 +1,3 @@
+project: ${oc.env:WANDB_PROJECT}
+grams_per_kwh: 434
+cents_per_kwh:  36
