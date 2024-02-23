@@ -14,9 +14,11 @@ dependencies:
   - lightning
   - hydra-core
   - pandas
+  - pyarrow
   - wandb
   - timm
   - scipy
   - webdataset
+
 # conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 # conda install -c conda-forge torchinfo lightning hydra-core pandas wandb timm scipy webdataset
