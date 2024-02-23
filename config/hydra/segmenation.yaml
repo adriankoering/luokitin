@@ -1,0 +1,7 @@
+defaults:
+  - default
+
+run:
+  dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${name}/${now:%Y-%m-%d_%H-%M-%S}
+sweep:
+  dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${name}/${now:%Y-%m-%d_%H-%M-%S}

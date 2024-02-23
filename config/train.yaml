@@ -5,11 +5,11 @@
 defaults:
   - _self_
   - dataset: mnist
+  - hydra: classification  # TODO: maybe have logging set by dataset or model?
   - model: classification
   - trainer: default
 #   - paths: default
 #   - extras: default
-#   - hydra: default
 
 #   # experiment configs allow for version control of specific hyperparameters
 #   # e.g. best hyperparameters for given model and datamodule
@@ -46,9 +46,4 @@ defaults:
 # # seed for random number generators in pytorch, numpy and python.random
 # seed: null
 
-
-# hydra:
-#   run:
-#     dir: ./logs/${data.name}/${model.encoder.name}/${model.decoder.name}/${name}/${now:%Y-%m-%d_%H-%M-%S}
-#   sweep:
-#     dir: ./logs/${data.name}/${model.encoder.name}/${model.decoder.name}/${name}/${now:%Y-%m-%d_%H-%M-%S}
+name: devel
