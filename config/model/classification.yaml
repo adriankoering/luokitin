@@ -1,0 +1,10 @@
+defaults:
+  - encoder: resnet18
+  - decoder: null
+  - loss: cross_entropy
+  - optimizer: adam
+  - learning_rate_scheduler: null
+  # - override hydra: classification
+
+_target_: model.classification.ClassificationModel
+_recursive_: false

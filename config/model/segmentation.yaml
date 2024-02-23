@@ -1,0 +1,9 @@
+defaults:
+  - encoder: resnet18
+  - decoder: lraspp
+  - loss: cross_entropy
+  - optimizer: adam
+  - learning_rate_scheduler: cosine_annealing
+
+_target_: model.segmentation.SegmentationModel
+_recursive_: false
