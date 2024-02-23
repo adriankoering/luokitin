@@ -1,3 +1,15 @@
+# disable hydra's logging for power.py
+defaults: 
+  - _self_
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .
+
+# actual config for power.py
 project: ${oc.env:WANDB_PROJECT}
 grams_per_kwh: 434
 cents_per_kwh:  36
