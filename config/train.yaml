@@ -5,15 +5,15 @@
 defaults:
   - _self_
   - dataset: mnist
-  - hydra: classification  # TODO: maybe have logging set by dataset or model?
+  - hydra: classification  # TODO: maybe have dataset or model determine logging?
   - model: classification
   - trainer: default
 #   - paths: default
 #   - extras: default
 
-#   # experiment configs allow for version control of specific hyperparameters
-#   # e.g. best hyperparameters for given model and datamodule
-#   - experiment: null
+  # experiment configs allow for version control of specific hyperparameters
+  # e.g. best hyperparameters for given model and datamodule
+  - experiment: null
 
 #   # config for hyperparameter optimization
 #   - hparams_search: null

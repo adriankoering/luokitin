@@ -1,0 +1,28 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=baseline
+
+defaults:
+  - override /dataset: mnist
+  - override /model: classification
+  - override /model/optimizer: sgd
+  - override /model/learning_rate_scheduler: one_cycle
+  - override /trainer: default
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+trainer:
+  max_steps: 1234
+  check_val_every_n_epoch: 1
+
+model:
+  optimizer:
+    lr: 2e-3
+    weight_decay: 1e-8
+    momentum: 0.9
+
+dataset:
+  batch_size: 128
+  num_workers: 16
