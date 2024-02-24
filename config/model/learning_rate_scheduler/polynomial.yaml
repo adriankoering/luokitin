@@ -1,3 +1,3 @@
 _target_: torch.optim.lr_scheduler.PolynomialLR
-total_iters: ${trainer.num_steps}
+total_iters: ${trainer.max_steps}
 power: 1.0
