@@ -8,6 +8,8 @@ defaults:
   - hydra: classification  # TODO: maybe have dataset or model determine logging?
   - model: classification
   - trainer: default
+
+  - callbacks: default
 #   - paths: default
 #   - extras: default
 
