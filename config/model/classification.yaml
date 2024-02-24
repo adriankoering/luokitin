@@ -7,4 +7,5 @@ defaults:
   # - override /hydra: classification ?
 
 _target_: model.classification.ClassificationModel
-_recursive_: false
+_recursive_: False
+compile: True

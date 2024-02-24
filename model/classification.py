@@ -7,7 +7,7 @@ import torchmetrics.classification as tmc
 from .base import BaseModel
 
 class ClassificationModel(BaseModel):
-    def __init__(self, encoder, decoder = None, **kwargs):
+    def __init__(self, encoder, decoder = None, compile: bool = True, **kwargs):
         super().__init__(**kwargs)
 
         self.model = hydra.utils.instantiate(encoder, in_chans=1, num_classes=self.num_classes)
@@ -15,6 +15,8 @@ class ClassificationModel(BaseModel):
             torch.nn.Flatten(),
             torch.nn.Linear(28*28, self.num_classes)
         )
+        if compile:
+            self.model = torch.compile(self.model)
 
         acc = tmc.MulticlassAccuracy(self.num_classes, ignore_index=self.ignore_index)
         collection = tm.MetricCollection({"acc": acc})

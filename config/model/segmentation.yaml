@@ -6,4 +6,5 @@ defaults:
   - learning_rate_scheduler: cosine_annealing
 
 _target_: model.segmentation.SegmentationModel
-_recursive_: false
+_recursive_: False
+compile: True
