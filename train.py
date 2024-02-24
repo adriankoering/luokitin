@@ -7,8 +7,6 @@ import wandb
 import torch
 from lightning.pytorch.loggers import WandbLogger
 
-import os
-
 @hydra.main(config_path="config", config_name="train", version_base="1.3")
 def main(cfg: DictConfig):
     hcfg = HydraConfig.get()
@@ -18,7 +16,7 @@ def main(cfg: DictConfig):
     model = instantiate(cfg.model, datamodule=dm)
     model = model.to(memory_format=torch.channels_last)
 
-    loggers = [WandbLogger(name=cfg.name, config=dcfg)]
+    loggers = [WandbLogger(config=dcfg)]
     # TODO: check Rich-Progress-Bar on slurm?
     callbacks = [instantiate(cb_cfg) for _, cb_cfg in cfg.callbacks.items()]
 

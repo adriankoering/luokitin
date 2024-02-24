@@ -12,12 +12,14 @@
 
 ##SBATCH --array=1-3
 
-# source ${HOME}/.bashrc
-
-# conda activate nighly
-# cd ${HOME}/certaimage
-
 export WANDB_PROJECT=mnist
 
-srun python train.py 
-# +experiment=loss/cross_entropy
+# Set these values per environment variable rather than config
+# s.t. we are reminded to update them before launching a run
+export WANDB_NAME=devel
+export WANDB_JOB_TYPE=devel
+export WANDB_JOB_NAME=devel
+export WANDB_TAGS="devel,softmax,regression"
+export WANDB_NOTES="Simple Softmax Regression"
+
+srun python train.py
