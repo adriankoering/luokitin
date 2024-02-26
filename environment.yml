@@ -1,4 +1,4 @@
-name: t2
+name: test
 channels:
   - pytorch
   - nvidia
@@ -19,6 +19,7 @@ dependencies:
   - timm
   - scipy
   - webdataset
+  - rich
 
 # conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 # conda install -c conda-forge torchinfo lightning hydra-core pandas wandb timm scipy webdataset
