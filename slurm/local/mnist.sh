@@ -4,7 +4,7 @@ export WANDB_PROJECT=mnist
 # s.t. we are reminded to update them before launching a run
 export WANDB_NAME=devel
 export WANDB_JOB_TYPE=devel
-export WANDB_JOB_NAME=devel
+export WANDB_JOB_NAME=${WANDB_NAME}
 export WANDB_TAGS="devel,softmax,regression"
 export WANDB_NOTES="Simple Softmax Regression"
 
