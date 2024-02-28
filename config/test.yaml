@@ -1,0 +1,24 @@
+# @package _global_
+
+# specify here default configuration
+# order of defaults determines the order in which configs override each other
+defaults:
+  - hydra: default
+
+  - dataset: mnist
+  - model: ensemble
+  - trainer: default
+
+  - _self_
+
+
+model:
+  run_dirs: [
+    /home/adrian/ws/luokitin/logs/mnist/resnet18/devel/2024-02-28_16-03-09,
+    ~/ws/luokitin/logs/mnist/resnet18/devel/2024-02-28_16-03-09,
+    logs/mnist/resnet18/devel/2024-02-28_16-03-09
+  ]
+
+hydra:
+  run:
+    dir: ./logs/${dataset.name}/ensemble/${now:%Y-%m-%d_%H-%M-%S}
