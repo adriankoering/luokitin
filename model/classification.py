@@ -9,6 +9,7 @@ from .base import BaseModel
 class ClassificationModel(BaseModel):
     def __init__(self, encoder, decoder = None, compile: bool = True, **kwargs):
         super().__init__(**kwargs)
+        self.save_hyperparameters(ignore="datamodule", logger=False)
 
         self.model = hydra.utils.instantiate(encoder, in_chans=1, num_classes=self.num_classes)
         self.model = torch.nn.Sequential(
@@ -59,7 +60,7 @@ class ClassificationModel(BaseModel):
 
     def on_validation_epoch_end(self) -> None:
         self.validation_metrics.reset()  # reset these explicitly
-        return super().on_train_epoch_end()
+        return super().on_validation_epoch_end()
 
     def test_step(self, batch, batch_idx):
         loss, logits, labels = self.step(batch)
@@ -69,7 +70,7 @@ class ClassificationModel(BaseModel):
 
     def on_test_epoch_end(self) -> None:
         self.test_metrics.reset()  # reset these explicitly
-        return super().on_train_epoch_end()
+        return super().on_test_epoch_end()
 
 
     def forward(self, images):
