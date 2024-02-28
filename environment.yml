@@ -1,4 +1,5 @@
-name: test
+# conda env create -f environment.yml
+name: t2
 channels:
   - pytorch
   - nvidia
