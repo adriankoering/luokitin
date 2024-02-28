@@ -1,35 +1,20 @@
 # @package _global_
 
-# specify here default configuration
-# order of defaults determines the order in which configs override each other
+# specify default configuration
+# order of defaults determines which configs override each other
 defaults:
-  - _self_
+  - hydra: default
+  
   - dataset: mnist
-  - hydra: classification  # TODO: maybe have dataset or model determine logging?
   - model: classification
   - trainer: default
 
   - callbacks: default
-#   - paths: default
-#   - extras: default
 
   # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
   - experiment: null
 
+  - _self_
 #   # config for hyperparameter optimization
 #   - hparams_search: null
-
-#   # optional local config for machine/user specific settings
-#   # it's optional since it doesn't need to exist and is excluded from version control
-#   - optional local: default
-
-#   # debugging config (enable through command line, e.g. `python train.py debug=default)
-#   - debug: null
-
-# # set False to skip model training
-# train: True
-
-# # evaluate on test set, using best model weights achieved during training
-# # lightning chooses best weights based on the metric specified in checkpoint callback
-# test: True

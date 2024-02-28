@@ -4,6 +4,7 @@ defaults:
   - loss: cross_entropy
   - optimizer: adam
   - learning_rate_scheduler: cosine_annealing
+  - logging: segmentation # overwrites hydra.run.dir
 
 _target_: model.segmentation.SegmentationModel
 _recursive_: False
