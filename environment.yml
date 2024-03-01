@@ -14,6 +14,7 @@ dependencies:
   - torchvision
   - lightning
   - hydra-core
+  - matplotlib
   - pandas
   - pyarrow
   - wandb
