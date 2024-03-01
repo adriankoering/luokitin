@@ -4,3 +4,4 @@ hydra:
     dir: ./logs/${dataset.name}/${model.encoder.model_name}/${oc.env:WANDB_JOB_NAME}/${now:%Y-%m-%d_%H-%M-%S}
   sweep:
     dir: ./logs/${dataset.name}/${model.encoder.model_name}/${oc.env:WANDB_JOB_NAME}/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.override_dirname}

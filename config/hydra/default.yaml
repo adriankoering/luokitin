@@ -1,6 +1,11 @@
-
 job:
-  chdir: True
+  chdir: False # neat feature, but wandb cant handle multiruns then 
+  config:
+    override_dirname:
+      exclude_keys:
+        - trainer
+        - experiment
+        - repeat_run
 
 run:
   dir: ./logs/${dataset.name}/${now:%Y-%m-%d_%H-%M-%S}

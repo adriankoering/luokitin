@@ -10,14 +10,13 @@ from lightning.pytorch.loggers import WandbLogger
 @hydra.main(config_path="config", config_name="train", version_base="1.3")
 def main(cfg: DictConfig):
     hcfg = HydraConfig.get()
-    dcfg = OmegaConf.to_container(cfg, resolve=True) if hcfg.mode == hydra.types.RunMode.RUN else None
+    dcfg = OmegaConf.to_container(cfg, resolve=True) # if hcfg.mode == hydra.types.RunMode.RUN else None
 
     dm = instantiate(cfg.dataset)
     model = instantiate(cfg.model, datamodule=dm)
     model = model.to(memory_format=torch.channels_last)
 
-    loggers = [WandbLogger(config=dcfg)]
-    # TODO: check Rich-Progress-Bar on slurm?
+    loggers = [WandbLogger(config=dcfg, reinit=True)]
     callbacks = [instantiate(cb_cfg) for _, cb_cfg in cfg.callbacks.items()]
 
     trainer = instantiate(cfg.trainer, logger=loggers, callbacks=callbacks)

@@ -9,4 +9,5 @@ export WANDB_TAGS="devel,softmax,regression"
 export WANDB_NOTES="Simple Softmax Regression"
 
 export HYDRA_FULL_ERROR=1 
-python train.py trainer=cpu experiment=mnist/baseline
+python train.py --multirun trainer=cpu experiment=mnist/baseline model.optimizer.lr=0.01,0.001,0.0001
+# python train.py trainer=cpu experiment=mnist/baseline model.optimizer.lr=0.01 #  -c hydra
