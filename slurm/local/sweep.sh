@@ -9,4 +9,4 @@ export WANDB_TAGS="softmax,regression,sgd_sweep"
 export WANDB_NOTES="Simple Softmax Regression"
 
 export HYDRA_FULL_ERROR=1
-wandb agent adriank/mnist/y9i93ivb
+wandb agent --count 10 adriank/luokitin/ij2cvojw

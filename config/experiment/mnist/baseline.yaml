@@ -6,7 +6,6 @@
 defaults:
   - override /dataset: mnist
   - override /model: classification
-  - override /model/encoder: softmax_regression
   - override /model/optimizer: sgd
   - override /model/learning_rate_scheduler: null
   - override /trainer: default
@@ -15,17 +14,17 @@ defaults:
 # this allows you to overwrite only specified parameters
 
 trainer:
-  max_steps: 1234
-  check_val_every_n_epoch: 1
+  max_steps: 2850
+  check_val_every_n_epoch: 2
 
 model:
   optimizer:
-    lr: 2e-3
-    weight_decay: 1e-8
-    momentum: 0.9
+    lr: 0.9
+    weight_decay: 1.2e-8
+    momentum: 0.75
   loss:
     label_smoothing: 0.0
 
 dataset:
-  batch_size: 128
-  num_workers: 16
+  batch_size: 256
+  num_workers:  8

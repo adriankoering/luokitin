@@ -8,27 +8,34 @@ metric:
 
 parameters:
   dataset.batch_size:
-    values: [16, 32, 64, 128, 256, 512, 1024]
+    values: [128, 256, 512, 1024, 2048]
 
   model.optimizer.lr:
-    min: 0.0001
+    distribution: log_uniform_values
+    min: 0.000001
     max: 0.5
   model.optimizer.momentum:
-    min: 0.1
+    distribution: uniform
+    min: 0.0
     max: 0.99
-  model.optimizer.weight_decay:
-    min: 0.0
-    max: 0.1
+  # model.optimizer.weight_decay:
+  #   min: 0.0
+  #   max: 0.1
 
-  model.loss.label_smoothing:
-    min: 0.0
-    max: 0.1
+  # model.loss.label_smoothing:
+  #   min: 0.0
+  #   max: 0.1
 
   trainer.max_steps:
-    min: 1_000
-    max: 100_000
+    distribution: normal
+    mu:  3_000
+    sigma: 300
 
-run_cap: 10 # _000
+run_cap: 1_000
+# early_terminate:
+#   min_iter: 1000
+
+
 program: train.py
 command:
 - ${env}
@@ -36,4 +43,5 @@ command:
 - ${program}
 - trainer=cpu
 - model/optimizer=sgd
+- experiment=mnist/baseline
 - ${args_no_hyphens}
