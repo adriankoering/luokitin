@@ -11,11 +11,7 @@ class ClassificationModel(BaseModel):
         super().__init__(**kwargs)
         self.save_hyperparameters(ignore="datamodule", logger=False)
 
-        self.model = hydra.utils.instantiate(encoder, in_chans=1, num_classes=self.num_classes)
-        self.model = torch.nn.Sequential(
-            torch.nn.Flatten(),
-            torch.nn.Linear(28*28, self.num_classes)
-        )
+        self.model = hydra.utils.instantiate(encoder, num_classes=self.num_classes)
         if compile:
             self.model = torch.compile(self.model)
 

@@ -1,0 +1,3 @@
+_target_: model.simple.SoftmaxRegression
+model_name: smax
+num_inputs: 784 # = 28 * 28

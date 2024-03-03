@@ -6,8 +6,9 @@
 defaults:
   - override /dataset: mnist
   - override /model: classification
+  - override /model/encoder: softmax_regression
   - override /model/optimizer: sgd
-  - override /model/learning_rate_scheduler: one_cycle
+  - override /model/learning_rate_scheduler: null
   - override /trainer: default
 
 # all parameters below will be merged with parameters from default configurations set above
@@ -22,6 +23,8 @@ model:
     lr: 2e-3
     weight_decay: 1e-8
     momentum: 0.9
+  loss:
+    label_smoothing: 0.0
 
 dataset:
   batch_size: 128
