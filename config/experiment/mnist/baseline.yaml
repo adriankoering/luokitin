@@ -6,6 +6,7 @@
 defaults:
   - override /dataset: mnist
   - override /model: classification
+  - override /model/encoder: softmax_regression
   - override /model/optimizer: sgd
   - override /model/learning_rate_scheduler: null
   - override /trainer: default

@@ -18,3 +18,5 @@ defaults:
   - _self_
 #   # config for hyperparameter optimization
 #   - hparams_search: null
+
+  - override hydra/launcher: ants
