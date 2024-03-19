@@ -1,3 +1,6 @@
+# defaults:
+#   - override launcher: submitit_slurm
+
 job:
   chdir: False # neat feature, but wandb cant handle multiruns then 
   config:
