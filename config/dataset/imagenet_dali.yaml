@@ -1,0 +1,8 @@
+defaults:
+  - imagenet
+  
+name: imagenet
+_target_: dataset.modules.daliset.WebdalisetDataModule
+data_dir: ~/data/imagenet/webds/64
+extension: [img, lbl]
+crop: [64, 64]
