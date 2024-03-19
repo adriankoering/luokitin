@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=mnist
+#SBATCH --job-name=baseline
 #SBATCH --partition=p2
 #SBATCH --time=1:00:00
 
@@ -18,7 +18,7 @@ export WANDB_PROJECT=mnist
 
 # Set these values per environment variable rather than config
 # s.t. we are reminded to update them before launching a run
-export WANDB_NAME=devel
+export WANDB_NAME=${SLURM_JOB_NAME}
 export WANDB_JOB_TYPE=devel
 export WANDB_JOB_NAME=${WANDB_NAME}
 export WANDB_TAGS="devel,softmax,regression"

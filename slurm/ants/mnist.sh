@@ -18,7 +18,7 @@ export WANDB_PROJECT=mnist
 
 # Set these values per environment variable rather than config
 # s.t. we are reminded to update them before launching a run
-export WANDB_NAME=baseline
+export WANDB_NAME=${SLURM_JOB_NAME}
 export WANDB_JOB_TYPE=baseline
 export WANDB_JOB_NAME=${WANDB_NAME}
 export WANDB_TAGS="baseline,softmax,regression"
