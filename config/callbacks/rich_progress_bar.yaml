@@ -1,5 +1,5 @@
 
 rich_progress_bar:
   _target_: lightning.pytorch.callbacks.RichProgressBar
-  refresh_rate: 100   # every n batches
+  refresh_rate: 1  # every n batches
   leave: True

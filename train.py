@@ -7,6 +7,9 @@ import wandb
 import torch
 from lightning.pytorch.loggers import WandbLogger
 
+OmegaConf.register_new_resolver("eval", eval)
+
+
 @hydra.main(config_path="config", config_name="train", version_base="1.3")
 def main(cfg: DictConfig):
     dcfg = OmegaConf.to_container(cfg, resolve=True)
@@ -27,7 +30,8 @@ def main(cfg: DictConfig):
     trainer.validate(model, dm)
     trainer.test(model, dm)
 
-    wandb.finish() # required for multi-runs
+    wandb.finish()  # required for multi-runs
+
 
 if __name__ == "__main__":
     main()
