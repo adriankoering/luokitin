@@ -1,5 +1,5 @@
-# conda env create -f environment.yml
-name: t2
+# conda env create -f environment.yaml
+name: dali
 channels:
   - pytorch
   - nvidia
@@ -17,13 +17,13 @@ dependencies:
   - hydra-submitit-launcher
   - matplotlib
   - pandas
-  - pyarrow
+#  - pyarrow
   - wandb
   - timm
   - scipy
   - webdataset
   - rich
-  - hydra-submitit-launcher
-
-# conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
-# conda install -c conda-forge torchinfo lightning hydra-core pandas wandb timm scipy webdataset
+# nvidia dali
+  - pip
+  - pip:
+    - nvidia-dali-cuda120
