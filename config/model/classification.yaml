@@ -8,4 +8,4 @@ defaults:
 
 _target_: model.classification.ClassificationModel
 _recursive_: False
-compile: True
+compile: False

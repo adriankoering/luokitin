@@ -1,0 +1,35 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=imagenet/baseline
+
+defaults:
+  - override /dataset: imagenet_dali
+  - override /model: classification
+  - override /model/encoder: softmax_regression
+  - override /model/optimizer: adamw
+  - override /model/learning_rate_scheduler: one_cycle
+  - override /trainer: default
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+dataset:
+  data_dir: ~/data/imagenet/webds/64
+  batch_size: 128
+  num_workers:  4
+
+model:
+  encoder:
+    num_inputs: ${eval:64 * 64 * 3}
+
+  optimizer:
+    lr: 0.001
+    weight_decay: 0.0
+  loss:
+    label_smoothing: 0.0
+
+
+trainer:
+  precision: 32
+  max_steps: 100000  # ${eval:3200 * 8}
+  check_val_every_n_epoch: 1

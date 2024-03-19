@@ -5,8 +5,9 @@ import torch
 
 from lightning.pytorch import LightningModule, LightningDataModule
 
+
 class BaseModel(LightningModule):
-    def __init__(self, datamodule, optimizer, loss, learning_rate_scheduler = None):
+    def __init__(self, datamodule, optimizer, loss, learning_rate_scheduler=None):
         super().__init__()
 
         self.num_classes = datamodule.num_classes
@@ -15,7 +16,7 @@ class BaseModel(LightningModule):
         self.loss_fn = hydra.utils.instantiate(
             loss,
             # num_classes=self.num_classes,
-            ignore_index=self.ignore_index,
+            # ignore_index=self.ignore_index,
         )
 
         # store the config to instantiate later
@@ -32,7 +33,8 @@ class BaseModel(LightningModule):
         return self.loss_fn(logits, labels), logits, labels
 
     def configure_optimizers(self):
-        opt = hydra.utils.instantiate(self.opt_cfg, self.parameters())
+        trainable = filter(lambda x: x.requires_grad, self.parameters())
+        opt = hydra.utils.instantiate(self.opt_cfg, trainable)
         scheduler = hydra.utils.instantiate(self.lrs_cfg, opt)
         schedule = {
             "scheduler": scheduler,

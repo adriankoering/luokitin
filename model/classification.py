@@ -6,12 +6,19 @@ import torchmetrics.classification as tmc
 
 from .base import BaseModel
 
+
 class ClassificationModel(BaseModel):
-    def __init__(self, encoder, decoder = None, compile: bool = True, **kwargs):
+    def __init__(self, encoder, decoder=None, compile: bool = True, **kwargs):
         super().__init__(**kwargs)
         self.save_hyperparameters(ignore="datamodule", logger=False)
 
         self.model = hydra.utils.instantiate(encoder, num_classes=self.num_classes)
+        for param in self.model.parameters():
+            param.requires_grad = False
+
+        for param in self.model.fc.parameters():
+            param.requires_grad = True
+
         if compile:
             self.model = torch.compile(self.model)
 
@@ -21,11 +28,11 @@ class ClassificationModel(BaseModel):
 
         # TODO: need less memory-intenstive implementation for segmentation
         # only apply ece on validation / test, because it OOM during training
-        ece = tmc.MulticlassCalibrationError(
-            num_classes = self.num_classes,
-            ignore_index = self.ignore_index,
-        )
-        collection.add_metrics({"ece": ece})
+        # ece = tmc.MulticlassCalibrationError(
+        #     num_classes = self.num_classes,
+        #     ignore_index = self.ignore_index,
+        # )
+        # collection.add_metrics({"ece": ece})
         self.validation_metrics = collection.clone(prefix="validation/")
         self.test_metrics = collection.clone(prefix="test/")
 
@@ -33,16 +40,12 @@ class ClassificationModel(BaseModel):
 
     def forward(self, images):
         return self.model(images)
-    
+
     def training_step(self, batch, batch_idx):
         loss, logits, labels = self.step(batch)
-        self.log("train/loss", loss, **self.log_cfg)
+        self.log("train/loss", loss, on_step=True, prog_bar=True)
         self.log_dict(self.train_metrics(logits, labels), **self.log_cfg)
         return dict(loss=loss, logits=logits)
-
-    def on_train_epoch_end(self) -> None:
-        self.train_metrics.reset()  # reset these explicitly
-        return super().on_train_epoch_end()
 
     def validation_step(self, batch, batch_idx):
         loss, logits, labels = self.step(batch)
@@ -54,20 +57,8 @@ class ClassificationModel(BaseModel):
         )
         return dict(loss=loss, logits=logits)
 
-    def on_validation_epoch_end(self) -> None:
-        self.validation_metrics.reset()  # reset these explicitly
-        return super().on_validation_epoch_end()
-
     def test_step(self, batch, batch_idx):
         loss, logits, labels = self.step(batch)
         self.log("test/loss", loss, **self.log_cfg)
         self.log_dict(self.test_metrics(logits, labels), **self.log_cfg)
         return dict(loss=loss, logits=logits)
-
-    def on_test_epoch_end(self) -> None:
-        self.test_metrics.reset()  # reset these explicitly
-        return super().on_test_epoch_end()
-
-
-    def forward(self, images):
-        return self.model(images)
