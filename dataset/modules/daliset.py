@@ -21,6 +21,9 @@ def tar_to_index_files(tarfiles):
 def find_files(root, pattern):
     return sorted(Path(root).expanduser().glob(pattern))
 
+def to_dtype(extension):
+    return {"img": types.UINT8, "dep": types.UINT8, "lbl": types.INT32}[extension]
+
 
 class LightningWrapper(DALIClassificationIterator):
     def __init__(self, *args, **kwargs):
@@ -45,7 +48,7 @@ class WebdalisetDataModule(LightningDataModule):
         std: Optional[tuple] = (1.0, 1.0, 1.0),
         classes: Optional[Tuple[str]] = None,
         ignore_index: Optional[int] = None,
-        extensions: Tuple[str] = ("img", "lbl"),
+        extensions: Tuple[str] = None, # ("img", "lbl"),
         crop: Optional[Tuple[int]] = None,
         *args: Any,
         **kwargs: Any,
@@ -72,7 +75,7 @@ class WebdalisetDataModule(LightningDataModule):
             print("No Test-Split available - re-using Validation Split")
             self.test_shards = self.val_shards
 
-        self.extensions = tuple(extensions)
+        self.extensions = tuple(extensions) if extensions else None
 
         self.num_workers = num_workers
         self.batch_size = batch_size
@@ -82,7 +85,7 @@ class WebdalisetDataModule(LightningDataModule):
         self.std = 255 * torch.as_tensor(std)
         self._classes = classes
         self._ignore = ignore_index
-        self.crop = tuple(crop)
+        self.crop = tuple(crop) if crop else None
 
     @property
     def classes(self) -> List[str]:
@@ -103,12 +106,11 @@ class WebdalisetDataModule(LightningDataModule):
         mirror = fn.random.coin_flip()
 
         index_files = tar_to_index_files(webdatasets)
-
-        jpeg, label = dali.fn.readers.webdataset(
+        color, *depth, label = dali.fn.readers.webdataset(
             paths=webdatasets,
             index_paths=index_files,
             ext=self.extensions,
-            dtypes=[types.UINT8, types.INT32],
+            dtypes=list(map(to_dtype, self.extensions)),
             shard_id=self.trainer.local_rank,
             num_shards=self.trainer.world_size,
             dont_use_mmap=True,
@@ -121,7 +123,13 @@ class WebdalisetDataModule(LightningDataModule):
             # initial_fill=1000,
         )
 
-        image = fn.decoders.image(jpeg, device="mixed", output_type=types.RGB)
+        image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+        if depth:
+            assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+            # Load depth image (and concatenate to color)
+            depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
+            image = fn.cat(image, depth, axis=-1)
+
         if self.crop is not None:
             image = fn.resize(image, size=self.crop, mode="not_smaller")
         image = fn.crop_mirror_normalize(
@@ -144,11 +152,11 @@ class WebdalisetDataModule(LightningDataModule):
     def evaluation_pipeline(self, webdatasets):
         index_files = tar_to_index_files(webdatasets)
 
-        jpeg, label = dali.fn.readers.webdataset(
+        color, *depth, label = dali.fn.readers.webdataset(
             paths=webdatasets,
             index_paths=index_files,
             ext=self.extensions,
-            dtypes=[types.UINT8, types.INT32],
+            dtypes=list(map(to_dtype, self.extensions)),
             shard_id=self.trainer.local_rank,
             num_shards=self.trainer.world_size,
             dont_use_mmap=True,
@@ -158,7 +166,13 @@ class WebdalisetDataModule(LightningDataModule):
             name="Reader",
         )
 
-        image = fn.decoders.image(jpeg, device="mixed", output_type=types.RGB)
+        image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+        if depth:
+            assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+            # Load depth image (and concatenate to color)
+            depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
+            image = fn.cat(image, depth, axis=-1)
+            
         if self.crop is not None:
             image = fn.resize(image, size=self.crop, mode="not_smaller")
         image = fn.crop_mirror_normalize(

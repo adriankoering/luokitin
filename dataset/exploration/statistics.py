@@ -24,6 +24,8 @@ def parse_arguments():
         nargs="+",
         type=str,
     )
+    # NOTE: provide arguments delimited by space only:
+    #   eg. --extensions img dep lbl
     parser.add_argument(
         "--extensions",
         default=("img", "lbl"),
@@ -57,10 +59,9 @@ class LightningWrapper(DALIClassificationIterator):
 
 @pipeline_def
 def pipeline(webdatasets, extensions):
-
     index_files = tar_to_index_files(webdatasets)
 
-    jpeg, label = dali.fn.readers.webdataset(
+    color, *depth, label = dali.fn.readers.webdataset(
         paths=webdatasets,
         index_paths=index_files,
         ext=extensions,
@@ -68,10 +69,15 @@ def pipeline(webdatasets, extensions):
         name="Reader",
     )
 
-    image = fn.decoders.image(jpeg, device="mixed", output_type=types.RGB)
-    image = fn.cast(image, dtype=types.FLOAT) / 255.
-    return image, label.gpu()
 
+    image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+    if depth:
+        assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+        depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
+        image = fn.cat(image, depth, axis=-1)
+
+    image = fn.cast(image, dtype=types.FLOAT) / 255.
+    return image, depth, label.gpu()
 
 
 # Reference (in-memory) implementation
@@ -117,8 +123,12 @@ def summing_std_mean(webdatasets, extensions, dim=(0, 1, 2)):
 
 
 def repr(x):
-    r, g, b = x
-    return f"[{r:2.4f}, {g:2.4f}, {b:2.4f}]"
+    # Create on float formatter per value
+    template = len(x) * "{:2.4f}, "
+    # [: -2] removes the trailing ', '
+    template = "[" + template[:-2] + "]"
+    # Format the values into the template
+    return template.format(*x)
 
 
 def pprint(std, mean):
