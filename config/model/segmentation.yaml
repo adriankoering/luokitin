@@ -5,6 +5,7 @@ defaults:
   - optimizer: adam
   - learning_rate_scheduler: cosine_annealing
   - logging: segmentation # overwrites hydra.run.dir
+  - metrics: segmentation
 
 _target_: model.segmentation.SegmentationModel
 _recursive_: False

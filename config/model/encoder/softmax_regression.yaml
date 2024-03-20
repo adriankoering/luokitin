@@ -1,3 +1,4 @@
 _target_: model.simple.SoftmaxRegression
 model_name: smax
-num_inputs: 784 # = 28 * 28
+num_inputs: ${eval: 28 * 28}
+num_classes: ${len:${dataset.classes}}

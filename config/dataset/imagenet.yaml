@@ -7,6 +7,7 @@ num_workers: 4
 mean: [0.4783, 0.4547, 0.4052]
 std: [0.2773, 0.2700, 0.2837]
 
+ignore_index: null
 classes: [
   tench,
   goldfish,

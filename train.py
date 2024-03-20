@@ -8,6 +8,7 @@ import torch
 from lightning.pytorch.loggers import WandbLogger
 
 OmegaConf.register_new_resolver("eval", eval)
+OmegaConf.register_new_resolver("len", lambda x: len(x))
 
 
 @hydra.main(config_path="config", config_name="train", version_base="1.3")
@@ -15,7 +16,7 @@ def main(cfg: DictConfig):
     dcfg = OmegaConf.to_container(cfg, resolve=True)
 
     dm = instantiate(cfg.dataset)
-    model = instantiate(cfg.model, datamodule=dm)
+    model = instantiate(cfg.model) # , datamodule=dm)
     model = model.to(memory_format=torch.channels_last)
 
     # Compared to WandbLogger(config=hcfg),

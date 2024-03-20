@@ -1,3 +1,5 @@
 _target_: torch.nn.CrossEntropyLoss
 weight: null
 label_smoothing: 1e-7
+# num_classes: ${len:${dataset.classes}}
+# ignore_index: ${dataset.ignore_index}

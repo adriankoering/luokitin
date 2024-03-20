@@ -5,6 +5,7 @@ defaults:
   - optimizer: adam
   - learning_rate_scheduler: null
   - logging: classification  # overwrites hydra.run.dir
+  - metrics: classification
 
 _target_: model.classification.ClassificationModel
 _recursive_: False
