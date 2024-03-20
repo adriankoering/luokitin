@@ -1,0 +1,5 @@
+iou:   # metric name for logging. Eg train/acc 
+  _target_: torchmetrics.classification.MulticlassJaccardIndex
+  num_classes: ${len:${dataset.classes}}
+  ignore_index: ${dataset.ignore_index}
+  average: macro

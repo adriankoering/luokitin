@@ -1,0 +1,9 @@
+# TODO: need less memory-intenstive implementation for segmentation
+# only apply ece on small validation / test, because it OOM otherwise
+
+ece:
+  _target_: torchmetrics.classification.MulticlassCalibrationError
+  num_classes: ${len:${dataset.classes}}
+  ignore_index: ${dataset.ignore_index}
+  n_bins: 15
+  norm: l1

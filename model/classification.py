@@ -1,4 +1,5 @@
-import hydra
+from hydra.utils import instantiate
+from omegaconf import OmegaConf
 
 import torch
 import torchmetrics as tm
@@ -8,40 +9,18 @@ from .base import BaseModel
 
 
 class ClassificationModel(BaseModel):
-    def __init__(
-        self,
-        encoder,
-        decoder=None,
-        compile: bool = True,
-        freeze_encoder: bool = False,
-        **kwargs
-    ):
+    def __init__(self, encoder, decoder=None, metrics=None, compile: bool = True, freeze_encoder: bool = False, **kwargs):
         super().__init__(**kwargs)
-        self.save_hyperparameters(ignore="datamodule", logger=False)
+        self.save_hyperparameters(logger=False)
 
-        self.model = hydra.utils.instantiate(encoder, num_classes=self.num_classes)
-
+        self.model = instantiate(encoder)
         if freeze_encoder:
             self.freeze_encoder()
         if compile:
             self.model = torch.compile(self.model)
 
-        acc = tmc.MulticlassAccuracy(
-            self.num_classes, ignore_index=self.ignore_index, average="micro"
-        )
-        top5 = tmc.MulticlassAccuracy(
-            self.num_classes, ignore_index=self.ignore_index, average="micro", top_k=5
-        )
-        collection = tm.MetricCollection({"acc": acc, "top5": top5})
+        collection = tm.MetricCollection(OmegaConf.to_container(instantiate(metrics)))
         self.train_metrics = collection.clone(prefix="train/")
-
-        # TODO: need less memory-intenstive implementation for segmentation
-        # only apply ece on validation / test, because it OOM during training
-        # ece = tmc.MulticlassCalibrationError(
-        #     num_classes = self.num_classes,
-        #     ignore_index = self.ignore_index,
-        # )
-        # collection.add_metrics({"ece": ece})
         self.validation_metrics = collection.clone(prefix="validation/")
         self.test_metrics = collection.clone(prefix="test/")
 
@@ -75,6 +54,5 @@ class ClassificationModel(BaseModel):
     def freeze_encoder(self):
         for param in self.model.parameters():
             param.requires_grad = False
-
         for param in self.model.fc.parameters():
             param.requires_grad = True

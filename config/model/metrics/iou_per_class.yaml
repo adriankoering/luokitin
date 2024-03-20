@@ -1,0 +1,9 @@
+iou_per_class:
+  _target_: torchmetrics.wrappers.ClasswiseWrapper
+  _convert_: partial
+  labels: ${dataset.classes}
+  metric: 
+    _target_: torchmetrics.classification.MulticlassJaccardIndex
+    num_classes: ${len:${dataset.classes}}
+    ignore_index: ${dataset.ignore_index}
+    average: macro

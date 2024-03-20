@@ -1,0 +1,5 @@
+defaults:
+  - accuracy
+  - accuracy_topk
+  # - accuracy_per_class
+  # - calibration_error

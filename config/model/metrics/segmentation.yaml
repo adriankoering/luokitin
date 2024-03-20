@@ -1,0 +1,4 @@
+defaults:
+  - accuracy
+  - iou
+  - iou_per_class

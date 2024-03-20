@@ -1,0 +1,10 @@
+accuracy_per_class:
+  _target_: torchmetrics.wrappers.ClasswiseWrapper
+  _convert_: partial
+  labels: ${dataset.classes}
+  metric:
+    _target_: torchmetrics.classification.MulticlassAccuracy
+    average: micro
+    num_classes: ${len:${dataset.classes}}
+    ignore_index: ${dataset.ignore_index}
+

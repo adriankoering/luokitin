@@ -1,0 +1,5 @@
+acc:   # metric name for logging. Eg train/acc 
+  _target_: torchmetrics.classification.MulticlassAccuracy
+  num_classes: ${len:${dataset.classes}}
+  ignore_index: ${dataset.ignore_index}
+  average: micro
