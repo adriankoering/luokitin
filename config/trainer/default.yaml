@@ -1,6 +1,6 @@
 _target_: lightning.pytorch.trainer.Trainer
 
-min_steps: None
+min_steps: null
 max_steps: 5_000
 check_val_every_n_epoch: 2
 
