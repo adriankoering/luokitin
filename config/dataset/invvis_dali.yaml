@@ -1,0 +1,6 @@
+defaults:
+  - invvis
+  
+_target_: dataset.modules.daliset.WebdalisetDataModule
+data_dir: ~/data/invvis/webds/initial
+extensions: [img, lbl]

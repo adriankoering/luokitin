@@ -1,0 +1,34 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=invvis/baseline
+
+defaults:
+  - override /dataset: invvis_dali_rgbd
+  - override /model: classification
+  - override /model/encoder: resnet18
+  - override /model/optimizer: adamw
+  - override /model/learning_rate_scheduler: one_cycle
+  - override /trainer: default
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+trainer:
+  precision: 16-mixed
+  max_steps: 2000
+  check_val_every_n_epoch: 1
+
+model:
+  encoder:
+    in_chans: 4
+
+  optimizer:
+    lr: 0.001
+    weight_decay: 1e-7
+  loss:
+    label_smoothing: 0.0
+
+dataset:
+  batch_size: 128
+  num_workers:  8

@@ -1,0 +1,35 @@
+name: invvis
+_target_: dataset.modules.ImageFolderDataModule
+data_dir: ~/data/invvis
+
+batch_size: 128
+num_worker: 8
+
+# color statistics
+mean: [0.1605, 0.2303, 0.2896]
+std:  [0.2156, 0.2101, 0.2017]
+
+# rgbd statistics
+# mean: [0.1605, 0.2303, 0.2896, 0.8826]
+# std:  [0.2156, 0.2101, 0.2017, 0.2881]
+
+ignore_index: null
+classes: [
+  'AllenKey', 
+  'Axis2', 
+  'Bearing2', 
+  'Drill', 
+  'Empty', 
+  'F20_20_B', 
+  'F20_20_G', 
+  'Housing', 
+  'M20', 
+  'M20_100', 
+  'M30', 
+  'Motor2', 
+  'S40_40_B', 
+  'S40_40_G', 
+  'ScrewDriver', 
+  'Spacer', 
+  'Wrench',
+]
