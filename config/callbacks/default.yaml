@@ -2,6 +2,7 @@ defaults:
   - learning_rate_monitor
   - model_checkpoint
   - rich_progress_bar
+  - early_stopping
   - _self_
 
 model_checkpoint:
