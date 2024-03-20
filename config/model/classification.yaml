@@ -8,4 +8,5 @@ defaults:
 
 _target_: model.classification.ClassificationModel
 _recursive_: False
+freeze_encoder: False
 compile: False

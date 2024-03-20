@@ -8,22 +8,31 @@ from .base import BaseModel
 
 
 class ClassificationModel(BaseModel):
-    def __init__(self, encoder, decoder=None, compile: bool = True, **kwargs):
+    def __init__(
+        self,
+        encoder,
+        decoder=None,
+        compile: bool = True,
+        freeze_encoder: bool = False,
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.save_hyperparameters(ignore="datamodule", logger=False)
 
         self.model = hydra.utils.instantiate(encoder, num_classes=self.num_classes)
-        for param in self.model.parameters():
-            param.requires_grad = False
 
-        for param in self.model.fc.parameters():
-            param.requires_grad = True
-
+        if freeze_encoder:
+            self.freeze_encoder()
         if compile:
             self.model = torch.compile(self.model)
 
-        acc = tmc.MulticlassAccuracy(self.num_classes, ignore_index=self.ignore_index)
-        collection = tm.MetricCollection({"acc": acc})
+        acc = tmc.MulticlassAccuracy(
+            self.num_classes, ignore_index=self.ignore_index, average="micro"
+        )
+        top5 = tmc.MulticlassAccuracy(
+            self.num_classes, ignore_index=self.ignore_index, average="micro", top_k=5
+        )
+        collection = tm.MetricCollection({"acc": acc, "top5": top5})
         self.train_metrics = collection.clone(prefix="train/")
 
         # TODO: need less memory-intenstive implementation for segmentation
@@ -62,3 +71,10 @@ class ClassificationModel(BaseModel):
         self.log("test/loss", loss, **self.log_cfg)
         self.log_dict(self.test_metrics(logits, labels), **self.log_cfg)
         return dict(loss=loss, logits=logits)
+
+    def freeze_encoder(self):
+        for param in self.model.parameters():
+            param.requires_grad = False
+
+        for param in self.model.fc.parameters():
+            param.requires_grad = True
