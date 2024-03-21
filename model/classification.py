@@ -1,9 +1,6 @@
 from hydra.utils import instantiate
-from omegaconf import OmegaConf
 
 import torch
-import torchmetrics as tm
-import torchmetrics.classification as tmc
 
 from .base import BaseModel
 
@@ -19,7 +16,7 @@ class ClassificationModel(BaseModel):
         if compile:
             self.model = torch.compile(self.model)
 
-        collection = tm.MetricCollection(OmegaConf.to_container(instantiate(metrics)))
+        collection = instantiate(metrics)
         self.train_metrics = collection.clone(prefix="train/")
         self.validation_metrics = collection.clone(prefix="validation/")
         self.test_metrics = collection.clone(prefix="test/")

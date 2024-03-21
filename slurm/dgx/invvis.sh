@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=depth_rn34
+#SBATCH --job-name=devel_rn34
 #SBATCH --partition=p2
 #SBATCH --time=1:00:00
 
@@ -9,13 +9,14 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=6G
 
+# mkdir -p logs/slogs/${SLURM_SLURM_ARRAY_JOB_ID}
 #SBATCH -o logs/slogs/%A_%a.out
 #SBATCH -e logs/slogs/%A_%a.err
 
 ##SBATCH --export ALL # exports env-varialbes from current shell to job?
 
 #SBATCH --nice=1000
-#SBATCH --array=1-16%2
+##SBATCH --array=1-16%2
 
 export WANDB_PROJECT=invvis
 
@@ -25,7 +26,7 @@ export WANDB_NAME=${SLURM_JOB_NAME}
 export WANDB_JOB_TYPE=devel
 export WANDB_JOB_NAME=${WANDB_NAME}
 export WANDB_TAGS="devel,depth,resnet34"
-# export WANDB_MODE=disabled
+export WANDB_MODE=disabled
 
 export HYDRA_FULL_ERROR=1 
 srun python train.py experiment=invvis/depth model/encoder=resnet34 # -c job --resolve

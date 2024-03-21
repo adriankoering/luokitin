@@ -1,4 +1,11 @@
 defaults:
-  - accuracy
-  - iou
-  - iou_per_class
+  - _self_
+  - components@metrics: 
+    - accuracy
+    - accuracy_topk
+    - iou
+    - iou_per_class
+  # - calibration_error
+
+_target_: torchmetrics.MetricCollection
+_convert_: partial
