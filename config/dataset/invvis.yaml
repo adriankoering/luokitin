@@ -1,17 +1,18 @@
 name: invvis
-_target_: dataset.modules.ImageFolderDataModule
+_target_: dataset.modules.invvis.InvvisDataModule
 data_dir: ~/data/invvis
+mode: RGBD
 
 batch_size: 128
 num_worker: 8
 
-# color statistics
-mean: [0.1605, 0.2303, 0.2896]
-std:  [0.2156, 0.2101, 0.2017]
+# # color statistics
+# mean: [0.1605, 0.2303, 0.2896]
+# std:  [0.2156, 0.2101, 0.2017]
 
 # rgbd statistics
-# mean: [0.1605, 0.2303, 0.2896, 0.8826]
-# std:  [0.2156, 0.2101, 0.2017, 0.2881]
+mean: [0.1605, 0.2303, 0.2896, 0.8826]
+std:  [0.2156, 0.2101, 0.2017, 0.2881]
 
 ignore_index: null
 classes: [
