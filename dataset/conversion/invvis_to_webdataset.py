@@ -57,7 +57,7 @@ class InvvisDataset(ImageFolder):
 def parse_arguments():
     args = ArgumentParser()
     args.add_argument(
-        "--outdir", type=Path, default=Path("~/data/invvis/webds/rgbd").expanduser()
+        "--outdir", type=Path, default=Path("~/data/invvis/webds/extra").expanduser()
     )
     args.add_argument("--pattern", type=str, default="invvis-{split}-%03d.tar")
     args.add_argument("--num-shards", type=int, default=4)

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=devel_rn34
+#SBATCH --job-name=extra_rgb_rn34
 #SBATCH --partition=p2
 #SBATCH --time=1:00:00
 
@@ -16,7 +16,7 @@
 ##SBATCH --export ALL # exports env-varialbes from current shell to job?
 
 #SBATCH --nice=1000
-##SBATCH --array=1-16%2
+#SBATCH --array=1-24%2
 
 export WANDB_PROJECT=invvis
 
@@ -25,8 +25,8 @@ export WANDB_PROJECT=invvis
 export WANDB_NAME=${SLURM_JOB_NAME}
 export WANDB_JOB_TYPE=devel
 export WANDB_JOB_NAME=${WANDB_NAME}
-export WANDB_TAGS="devel,depth,resnet34"
-export WANDB_MODE=disabled
+export WANDB_TAGS="devel,rgb,extra,resnet34"
+# export WANDB_MODE=disabled
 
 export HYDRA_FULL_ERROR=1 
-srun python train.py experiment=invvis/depth model/encoder=resnet34 # -c job --resolve
+srun python train.py experiment=invvis/rgb dataset.data_dir=/home/koering/data/invvis/webds/extra model/encoder=resnet34 # -c job --resolve
