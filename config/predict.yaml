@@ -1,0 +1,40 @@
+# @package _global_
+defaults:
+  - hydra: default
+
+  - dataset: invvis
+  - model: ensemble
+  - trainer: default
+
+  - _self_
+
+
+model:
+  run_dirs: [
+    logs/invvis/resnet34/rgbd_rn34/15993,
+    logs/invvis/resnet34/rgbd_rn34/15994,
+    # logs/invvis/resnet34/rgbd_rn34/15995,
+    # logs/invvis/resnet34/rgbd_rn34/15996,
+    # logs/invvis/resnet34/rgbd_rn34/15997,
+    # logs/invvis/resnet34/rgbd_rn34/15998,
+    # logs/invvis/resnet34/rgbd_rn34/15999,
+    # logs/invvis/resnet34/rgbd_rn34/16000,
+    # logs/invvis/resnet34/rgbd_rn34/16001,
+    # logs/invvis/resnet34/rgbd_rn34/16002,
+    # logs/invvis/resnet34/rgbd_rn34/16003,
+    # logs/invvis/resnet34/rgbd_rn34/16004,
+    # logs/invvis/resnet34/rgbd_rn34/16005,
+    # logs/invvis/resnet34/rgbd_rn34/16006,
+    # logs/invvis/resnet34/rgbd_rn34/16007,
+    # logs/invvis/resnet34/rgbd_rn34/16008,
+    # logs/invvis/resnet34/rgbd_rn34/16009,
+    # logs/invvis/resnet34/rgbd_rn34/16010,
+    # logs/invvis/resnet34/rgbd_rn34/16011,
+    # logs/invvis/resnet34/rgbd_rn34/16012,
+    # logs/invvis/resnet34/rgbd_rn34/16013,
+    # logs/invvis/resnet34/rgbd_rn34/16014,
+  ]
+
+hydra:
+  run:
+    dir: ./logs/${dataset.name}/ensemble/${now:%Y-%m-%d_%H-%M-%S}

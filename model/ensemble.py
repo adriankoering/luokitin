@@ -19,8 +19,7 @@ def import_cls(target: str):
 
 
 class EnsembleModel(LightningModule):
-    def __init__(self, run_dirs: List[str], datamodule: LightningDataModule, 
-                 config_suffix: str=".hydra/config.yaml", ckpt_suffix: str="ckpt/last.ckpt"):
+    def __init__(self, run_dirs: List[str], config_suffix: str=".hydra/config.yaml", ckpt_suffix: str="ckpt/last.ckpt"):
         super().__init__()
 
         assert run_dirs, "Ensembled didnt receive any member models"
@@ -35,12 +34,12 @@ class EnsembleModel(LightningModule):
         self.models = nn.ModuleList([])
         for model_cfg, ckpt_file in zip(model_cfgs, ckpt_files):
             Model = import_cls(model_cfg._target_)
-            model = Model.load_from_checkpoint(ckpt_file, datamodule=datamodule)
+            model = Model.load_from_checkpoint(ckpt_file)
             self.models.append(model)
             # TODO: memory format?
 
-
         self.loss_fn = self.models[0].loss_fn
+        self.validation_metrics = self.models[0].validation_metrics
         self.test_metrics = self.models[0].test_metrics
 
     # def mysummary(self, model):
@@ -57,6 +56,8 @@ class EnsembleModel(LightningModule):
     #     return dict(num_params=num_params, mult_adds=mult_adds)
 
     def forward(self, image):
+        dim = (0, 2, 3)
+        # print(image.amin(dim), image.mean(dim), image.amax(dim))
         out = torch.stack([model(image) for model in self.models])
         return out.mean(dim=0)
 
@@ -65,6 +66,13 @@ class EnsembleModel(LightningModule):
         logits = self(images)
         return self.loss_fn(logits, labels), logits, labels
     
+    def validation_step(self, batch, batch_idx):
+        loss, logits, labels = self.step(batch)
+        log_cfg = dict(on_step=False, on_epoch=True)
+        self.log("validation/loss", loss, **log_cfg)
+        self.log_dict(self.validation_metrics(logits, labels), **log_cfg)
+        return dict(loss=loss, logits=logits)
+
     def test_step(self, batch, batch_idx):
         loss, logits, labels = self.step(batch)
         log_cfg = dict(on_step=False, on_epoch=True)
@@ -72,5 +80,6 @@ class EnsembleModel(LightningModule):
         self.log_dict(self.test_metrics(logits, labels), **log_cfg)
         return dict(loss=loss, logits=logits)
 
-    def on_test_epoch_end(self) -> None:
-        self.test_metrics.reset()  # reset these explicitly
+    def predict_step(self, batch, batch_idx):
+        images, labels = batch
+        return self(images)
