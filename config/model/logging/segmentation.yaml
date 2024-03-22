@@ -1,7 +1,7 @@
 # @package _global_
 hydra:
   run:
-    dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${oc.env:WANDB_JOB_NAME}/${now:%Y-%m-%d_%H-%M-%S}
+    dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${oc.env:WANDB_JOB_NAME}/${oc.env:SLURM_JOB_ID, ${now:%Y-%m-%d_%H-%M-%S}}
   sweep:
-    dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${oc.env:WANDB_JOB_NAME}/${now:%Y-%m-%d_%H-%M-%S}
+    dir: ./logs/${dataset.name}/${model.encoder.model_name}/${model.decoder.name}/${oc.env:WANDB_JOB_NAME}/${oc.env:SLURM_JOB_ID, ${now:%Y-%m-%d_%H-%M-%S}}
     subdir: ${hydra.job.override_dirname}
