@@ -16,7 +16,7 @@ defaults:
 
 trainer:
   precision: 16-mixed
-  max_steps: ${eval:3203 * 10}
+  max_steps: ${eval:3203 * 60}
   check_val_every_n_epoch: 1
 
 model:
