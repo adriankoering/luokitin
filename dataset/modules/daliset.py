@@ -5,10 +5,9 @@ import torch
 from torch.utils.data import DataLoader as DataLoaderLike
 from lightning.pytorch import LightningDataModule
 
-import nvidia.dali as dali
+from nvidia.dali import fn
+from nvidia.dali import types
 from nvidia.dali import pipeline_def
-import nvidia.dali.fn as fn
-import nvidia.dali.types as types
 from nvidia.dali.plugin.pytorch import DALIClassificationIterator, LastBatchPolicy
 
 __all__ = ["WebdalisetDataModule"]
@@ -20,6 +19,7 @@ def tar_to_index_files(tarfiles):
 
 def find_files(root, pattern):
     return sorted(Path(root).expanduser().glob(pattern))
+
 
 def to_dtype(extension):
     return {"img": types.UINT8, "dep": types.UINT8, "lbl": types.INT32}[extension]
@@ -48,7 +48,7 @@ class WebdalisetDataModule(LightningDataModule):
         std: Optional[tuple] = (1.0, 1.0, 1.0),
         classes: Optional[Tuple[str]] = None,
         ignore_index: Optional[int] = None,
-        extensions: Tuple[str] = None, # ("img", "lbl"),
+        extensions: Tuple[str] = None,  # ("img", "lbl"),
         crop: Optional[Tuple[int]] = None,
         *args: Any,
         **kwargs: Any,
@@ -103,10 +103,11 @@ class WebdalisetDataModule(LightningDataModule):
 
     @pipeline_def
     def train_pipeline(self, webdatasets):
-        mirror = fn.random.coin_flip()
+        rnd_mirror = fn.random.coin_flip()
+        # rnd_crop = fn.random.uniform(dtype=types.INT16, range=[0, 65536])
 
         index_files = tar_to_index_files(webdatasets)
-        color, *depth, label = dali.fn.readers.webdataset(
+        color, *depth, label = fn.readers.webdataset(
             paths=webdatasets,
             index_paths=index_files,
             ext=self.extensions,
@@ -118,28 +119,39 @@ class WebdalisetDataModule(LightningDataModule):
             prefetch_queue_depth=2,
             read_ahead=True,
             name="Reader",
-            # TODO: shuflfe once training longer
-            # random_shuffle=True,
-            # initial_fill=1000,
+            random_shuffle=True,
+            initial_fill=1000,
         )
 
-        image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+        # image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+        image = fn.decoders.image_random_crop(
+            color,
+            device="mixed",
+            output_type=types.RGB,
+            num_attempts=10,
+            random_area=[0.2, 1.0],
+            random_aspect_ratio=[0.75, 1.333333],
+            # seed=rnd_crop,
+        )
         if depth:
-            assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+            assert (
+                len(depth) == 1
+            ), f"Expected only a single depth image. Found {len(depth)=}"
             # Load depth image (and concatenate to color)
             depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
             image = fn.cat(image, depth, axis=-1)
 
-        if self.crop is not None:
-            image = fn.resize(image, size=self.crop, mode="not_smaller")
+        # if self.crop is not None:
+        #     image = fn.resize(image, size=self.crop, mode="not_smaller")
+        image = fn.resize(image, size=self.crop)
         image = fn.crop_mirror_normalize(
             image,
             dtype=types.FLOAT,
             mean=self.mean,
             std=self.std,
             output_layout="CHW",
-            mirror=mirror,
-            crop=self.crop,
+            mirror=rnd_mirror,
+            # crop=self.crop,
         )
 
         label = fn.cast(label, dtype=types.INT64)
@@ -152,7 +164,7 @@ class WebdalisetDataModule(LightningDataModule):
     def evaluation_pipeline(self, webdatasets):
         index_files = tar_to_index_files(webdatasets)
 
-        color, *depth, label = dali.fn.readers.webdataset(
+        color, *depth, label = fn.readers.webdataset(
             paths=webdatasets,
             index_paths=index_files,
             ext=self.extensions,
@@ -167,12 +179,12 @@ class WebdalisetDataModule(LightningDataModule):
         )
 
         image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
-        if depth:
-            assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
-            # Load depth image (and concatenate to color)
-            depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
-            image = fn.cat(image, depth, axis=-1)
-            
+        # if depth:
+        #     assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+        #     # Load depth image (and concatenate to color)
+        #     depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
+        #     image = fn.cat(image, depth, axis=-1)
+
         if self.crop is not None:
             image = fn.resize(image, size=self.crop, mode="not_smaller")
         image = fn.crop_mirror_normalize(
