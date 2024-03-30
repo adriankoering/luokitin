@@ -11,8 +11,13 @@ num_worker: 8
 # std:  [0.2156, 0.2101, 0.2017]
 
 # rgbd statistics
-mean: [0.1605, 0.2303, 0.2896, 0.8826]
-std:  [0.2156, 0.2101, 0.2017, 0.2881]
+# day-split
+mean:  [0.1833, 0.2464, 0.2912, 0.9533]
+std:   [0.2288, 0.2195, 0.2093, 0.1921]
+
+# initial data
+# mean: [0.1605, 0.2303, 0.2896, 0.8826]
+# std:  [0.2156, 0.2101, 0.2017, 0.2881]
 
 ignore_index: null
 classes: [
@@ -20,7 +25,7 @@ classes: [
   'Axis2', 
   'Bearing2', 
   'Drill', 
-  'Empty', 
+  'Empty',
   'F20_20_B', 
   'F20_20_G', 
   'Housing', 

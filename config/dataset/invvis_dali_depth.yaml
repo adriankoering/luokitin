@@ -4,5 +4,5 @@ defaults:
 _target_: dataset.modules.daliset.WebdalisetDataModule
 data_dir: ~/data/invvis/webds/initial
 extensions: [dep, lbl]
-mean: [0.8826]
-std:  [0.2881]
+mean: [0.9533]
+std:  [0.1921]
