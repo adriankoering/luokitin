@@ -27,7 +27,7 @@ def parse_arguments():
     # NOTE: provide arguments delimited by space only:
     #   eg. --extensions img dep lbl
     parser.add_argument(
-        "--extensions",
+        "-e", "--extensions",
         default=("img", "lbl"),
         nargs="+",
         type=str,
@@ -77,7 +77,7 @@ def pipeline(webdatasets, extensions):
         image = fn.cat(image, depth, axis=-1)
 
     image = fn.cast(image, dtype=types.FLOAT) / 255.
-    return image, depth, label.gpu()
+    return image, label.gpu()
 
 
 # Reference (in-memory) implementation
