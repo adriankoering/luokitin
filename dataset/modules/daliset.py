@@ -123,16 +123,16 @@ class WebdalisetDataModule(LightningDataModule):
             initial_fill=1000,
         )
 
-        # image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
-        image = fn.decoders.image_random_crop(
-            color,
-            device="mixed",
-            output_type=types.RGB,
-            num_attempts=10,
-            random_area=[0.2, 1.0],
-            random_aspect_ratio=[0.75, 1.333333],
-            # seed=rnd_crop,
-        )
+        image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
+        # image = fn.decoders.image_random_crop(
+        #     color,
+        #     device="mixed",
+        #     output_type=types.RGB,
+        #     num_attempts=10,
+        #     random_area=[0.2, 1.0],
+        #     random_aspect_ratio=[0.75, 1.333333],
+        #     # seed=rnd_crop,
+        # )
         if depth:
             assert (
                 len(depth) == 1
@@ -141,9 +141,9 @@ class WebdalisetDataModule(LightningDataModule):
             depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
             image = fn.cat(image, depth, axis=-1)
 
-        # if self.crop is not None:
-        #     image = fn.resize(image, size=self.crop, mode="not_smaller")
-        image = fn.resize(image, size=self.crop)
+        if self.crop is not None:
+            image = fn.resize(image, size=self.crop, mode="not_smaller")
+        # image = fn.resize(image, size=self.crop)
         image = fn.crop_mirror_normalize(
             image,
             dtype=types.FLOAT,
@@ -179,11 +179,11 @@ class WebdalisetDataModule(LightningDataModule):
         )
 
         image = fn.decoders.image(color, device="mixed", output_type=types.RGB)
-        # if depth:
-        #     assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
-        #     # Load depth image (and concatenate to color)
-        #     depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
-        #     image = fn.cat(image, depth, axis=-1)
+        if depth:
+            assert len(depth) == 1, f"Expected only a single depth image. Found {len(depth)=}"
+            # Load depth image (and concatenate to color)
+            depth = fn.decoders.image(depth[0], device="mixed", output_type=types.GRAY)
+            image = fn.cat(image, depth, axis=-1)
 
         if self.crop is not None:
             image = fn.resize(image, size=self.crop, mode="not_smaller")

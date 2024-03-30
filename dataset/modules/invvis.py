@@ -34,6 +34,10 @@ class InvvisDataset(ImageFolder):
         super().__init__(root, loader=pil_loader_asis, is_valid_file=partial(is_color_image, suffix=color_suffix))
         self.to_depth = partial(color_to_depth_image, suffix=depth_suffix)
 
+        my_classes = sorted(root.iterdir())
+        self.my_images = sorted([sorted(c.glob(f"*{color_suffix}")) for c in my_classes])
+
+
     def __getitem__(self, idx):
         color, label = self.samples[idx]
         depth = self.to_depth(color)
@@ -45,6 +49,9 @@ class InvvisDataset(ImageFolder):
         paths = f"{str(color)}\n{str(depth)}"
         (Path("sorted") / f"{idx:06d}.path").write_text(paths)
 
+        # print(color)
+        # print(self.my_images[0][idx])
+        assert color == str(self.my_images[0][idx]), f"{color} at {idx} doesnt match mine"
 
         color = self.loader(color)
         depth = self.loader(depth)
