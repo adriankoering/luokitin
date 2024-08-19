@@ -34,8 +34,8 @@ class InvvisDataset(ImageFolder):
         super().__init__(root, loader=pil_loader_asis, is_valid_file=partial(is_color_image, suffix=color_suffix))
         self.to_depth = partial(color_to_depth_image, suffix=depth_suffix)
 
-        my_classes = sorted(root.iterdir())
-        self.my_images = sorted([sorted(c.glob(f"*{color_suffix}")) for c in my_classes])
+        # my_classes = sorted(root.iterdir())
+        # self.my_images = sorted([sorted(c.glob(f"*{color_suffix}")) for c in my_classes])
 
 
     def __getitem__(self, idx):
@@ -51,7 +51,7 @@ class InvvisDataset(ImageFolder):
 
         # print(color)
         # print(self.my_images[0][idx])
-        assert color == str(self.my_images[0][idx]), f"{color} at {idx} doesnt match mine"
+        # assert color == str(self.my_images[0][idx]), f"{color} at {idx} doesnt match mine"
 
         color = self.loader(color)
         depth = self.loader(depth)
@@ -188,7 +188,7 @@ class InvvisDataModule(LightningDataModule):
         )
     
     def predict_dataloader(self) -> DataLoader:
-        self.pred_ds = self.DataSet(self.data_dir / "extra", transform=self.preprocess)
+        self.pred_ds = self.DataSet(self.data_dir / "val", transform=self.preprocess)
         return DataLoader(
             self.pred_ds, batch_size=2 * self.batch_size, num_workers=self.num_workers
         )
