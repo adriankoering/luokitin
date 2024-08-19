@@ -8,14 +8,16 @@ import torch
 import numpy as np
 from lightning.pytorch.callbacks import BasePredictionWriter
 from pathlib import Path
+
+
 class ImageSorter(BasePredictionWriter):
     def __init__(self, output_dir):
         super().__init__(write_interval="batch_and_epoch")
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True, parents=True)
 
-        self.mean= torch.as_tensor([0.1605, 0.2303, 0.2896, 0.8826]).view(-1, 1, 1)
-        self.std=torch.as_tensor([0.2156, 0.2101, 0.2017, 0.2881]).view(-1, 1, 1)
+        self.mean = torch.as_tensor([0.1605, 0.2303, 0.2896, 0.8826]).view(-1, 1, 1)
+        self.std = torch.as_tensor([0.2156, 0.2101, 0.2017, 0.2881]).view(-1, 1, 1)
 
 
     def write_on_batch_end(self, trainer, pl_module, prediction, batch_indices, batch, batch_idx, dataloader_idx):
@@ -42,7 +44,7 @@ def main(cfg: DictConfig):
     dm = instantiate(cfg.dataset)
     ensemble = instantiate(cfg.model)
 
-    trainer = instantiate(cfg.trainer, callbacks=[ImageSorter("sorted")], logger=None)
+    trainer = instantiate(cfg.trainer, callbacks=[ImageSorter("sorted/val")], logger=None)
     trainer.predict(ensemble, dm)
 
 
