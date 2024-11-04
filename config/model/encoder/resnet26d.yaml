@@ -1,0 +1,4 @@
+_target_: timm.create_model
+model_name: resnet26d
+num_classes: ${len:${dataset.classes}}
+pretrained: true
