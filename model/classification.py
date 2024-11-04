@@ -1,6 +1,7 @@
 from hydra.utils import instantiate
 
 import torch
+torch.set_float32_matmul_precision('high')
 
 from .base import BaseModel
 

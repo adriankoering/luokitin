@@ -2,7 +2,7 @@
 #   - override launcher: submitit_slurm
 
 job:
-  chdir: False # neat feature, but wandb cant handle multiruns then 
+  chdir: False  # neat feature, but wandb cant handle multiruns then
   config:
     override_dirname:
       exclude_keys:
