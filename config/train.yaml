@@ -20,3 +20,9 @@ defaults:
 #   - hparams_search: null
 
   - override hydra/launcher: ants
+
+wandb:
+  _target_: lightning.pytorch.loggers.WandbLogger
+  project: mnist
+  name: submitit
+  job_type: devel

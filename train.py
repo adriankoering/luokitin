@@ -21,7 +21,8 @@ def main(cfg: DictConfig):
 
     # Compared to WandbLogger(config=hcfg),
     # these two steps also work with wandb sweeps
-    logger = WandbLogger(reinit=True)
+    ## logger = WandbLogger(reinit=True)
+    logger = instantiate(cfg.wandb, reinit=True)
     logger.experiment.config.setdefaults(dcfg)
     callbacks = [instantiate(cb_cfg) for _, cb_cfg in cfg.callbacks.items()]
 

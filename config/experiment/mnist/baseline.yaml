@@ -19,10 +19,10 @@ trainer:
   check_val_every_n_epoch: 2
 
 model:
-  optimizer:
-    lr: 0.9
-    weight_decay: 1.2e-8
-    momentum: 0.75
+  # optimizer:
+  #   lr: 0.9
+  #   weight_decay: 1.2e-8
+  #   momentum: 0.75
   loss:
     label_smoothing: 0.0
 
