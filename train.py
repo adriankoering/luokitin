@@ -16,7 +16,9 @@ def main(cfg: DictConfig):
     dcfg = OmegaConf.to_container(cfg, resolve=True)
 
     dm = instantiate(cfg.dataset)
-    model = instantiate(cfg.model) # , datamodule=dm)
+    model = instantiate(cfg.model)
+    # Channels Last is a couple of % faster and costs nothing,
+    #   but a image.to(channels_last) in the forward pass
     model = model.to(memory_format=torch.channels_last)
 
     # Compared to WandbLogger(config=hcfg),
@@ -24,11 +26,12 @@ def main(cfg: DictConfig):
     ## logger = WandbLogger(reinit=True)
     logger = instantiate(cfg.wandb, reinit=True)
     logger.experiment.config.setdefaults(dcfg)
-    callbacks = [instantiate(cb_cfg) for _, cb_cfg in cfg.callbacks.items()]
 
-    trainer = instantiate(cfg.trainer, logger=logger, callbacks=callbacks)
+    trainer = instantiate(cfg.trainer, logger=logger)
     trainer.fit(model, dm)
-    # Since we specify num_steps, recalculate val and test metrics at the end
+    # Since we specify num_steps instead of epochs,
+    # training doesnt necessarily end with a validation run
+    #  NOTE: recalculate val and test metrics at the end
     trainer.validate(model, dm)
     trainer.test(model, dm)
 
