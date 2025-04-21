@@ -1,0 +1,6 @@
+defaults:
+  - cumulus
+
+name: cumulus_torch
+_target_: dataset.modules.generic.ImageFolderDataModule
+root: ~/data/cumulus

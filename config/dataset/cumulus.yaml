@@ -1,0 +1,7 @@
+mean: [0.5, 0.5, 0.5]
+std:  [0.5, 0.5, 0.5]
+
+ignore_index: null
+classes: [
+  clear, foggy, night, overcast, partly_cloudy, rainy, snowy
+]
